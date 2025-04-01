@@ -23,7 +23,7 @@ type Amount = {
 interface ReportLine {
   performanceName: string;
   amountGenerated: Amount;
-  audiencie: number;
+  audience: number;
 }
 
 function statement(invoice: Invoice, plays: Plays) {
@@ -34,9 +34,9 @@ function statement(invoice: Invoice, plays: Plays) {
     throw new Error(`unknown type: ${plays[invalidPerformance.playID].type}`);    
   }
 
-  let result = `Statement for ${invoice.customer}\n`;
   const format = buildCurrencyFormatter();
   const amounts: Amount[] = [];
+  const reportLines: ReportLine[] = [];
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     const amountGenerated: Amount = {amount: 0, credits: 0};
@@ -50,15 +50,23 @@ function statement(invoice: Invoice, plays: Plays) {
         amountGenerated.credits = calculateCreditsComedy(perf.audience); 
         break;
     }
+    const reportLine = {
+      performanceName: play.name,
+      amountGenerated,
+      audience: perf.audience
+    }
+    reportLines.push(reportLine);
     amounts.push(amountGenerated);
-    // print line for this order
-    result += ` ${play.name}: ${format(amountGenerated.amount / 100)} (${perf.audience} seats)\n`;
   }
   let totalAmount = 0;
   let volumeCredits = 0;
-  for (let amount of amounts) {
-    totalAmount += amount.amount;
-    volumeCredits += amount.credits;
+  let result = `Statement for ${invoice.customer}\n`;
+  for (let reportLine of reportLines) {
+    totalAmount += reportLine.amountGenerated.amount;
+    volumeCredits += reportLine.amountGenerated.credits;
+    // print line for this order
+    result += ` ${reportLine.performanceName}: ${format(reportLine.amountGenerated.amount / 100)} (${reportLine.audience} seats)\n`;
+
   }
 
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
