@@ -35,7 +35,6 @@ function statement(invoice: Invoice, plays: Plays) {
   }
 
   const format = buildCurrencyFormatter();
-  const amounts: Amount[] = [];
   const reportLines: ReportLine[] = [];
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
@@ -56,7 +55,6 @@ function statement(invoice: Invoice, plays: Plays) {
       audience: perf.audience
     }
     reportLines.push(reportLine);
-    amounts.push(amountGenerated);
   }
   let totalAmount = 0;
   let volumeCredits = 0;
