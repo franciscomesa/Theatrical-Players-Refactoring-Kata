@@ -15,6 +15,11 @@ type Invoice = {
   performances: Performance[];
 };
 
+type Amount = {
+  amount: number;
+  credits: number;
+}
+
 function statement(invoice: Invoice, plays: Plays) {
   const invalidPerformance = invoice.performances.find( (performance) => {
     return plays[performance.playID].type !== "tragedy" && plays[performance.playID].type !== "comedy";
@@ -30,22 +35,23 @@ function statement(invoice: Invoice, plays: Plays) {
 
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
-    let thisAmount = 0;
+    const amountGenerated: Amount = {amount: 0, credits: 0};
     switch (play.type) {
       case "tragedy":
-        thisAmount = calculateAmountTragedy(perf.audience);
+        amountGenerated.amount = calculateAmountTragedy(perf.audience);
         break;
       case "comedy":
-        thisAmount = calculateAmountComedy(perf.audience);
+        amountGenerated.amount = calculateAmountComedy(perf.audience);
         break;
     }
     // add volume credits
-    volumeCredits += Math.max(perf.audience - 30, 0);
+    amountGenerated.credits = Math.max(perf.audience - 30, 0);
     // add extra credit for every five comedy attendees
-    if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ("comedy" === play.type) amountGenerated.credits += Math.floor(perf.audience / 5);
     // print line for this order
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
-    totalAmount += thisAmount;
+    result += ` ${play.name}: ${format(amountGenerated.amount / 100)} (${perf.audience} seats)\n`;
+    totalAmount += amountGenerated.amount;
+    volumeCredits += amountGenerated.credits;
   }
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
