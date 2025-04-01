@@ -34,7 +34,6 @@ function statement(invoice: Invoice, plays: Plays) {
     throw new Error(`unknown type: ${plays[invalidPerformance.playID].type}`);    
   }
 
-  const format = buildCurrencyFormatter();
   const reportLines: ReportLine[] = [];
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
@@ -56,13 +55,14 @@ function statement(invoice: Invoice, plays: Plays) {
     }
     reportLines.push(reportLine);
   }
-  let result = buildResult(invoice, reportLines, format);
+  let result = buildResult(invoice, reportLines);
   return result;
 }
 
 export { statement };
 
-  function buildResult(invoice: Invoice, reportLines: ReportLine[], format: { (value: number): string; (value: number | bigint): string; }) {
+  function buildResult(invoice: Invoice, reportLines: ReportLine[]) {
+    const format = buildCurrencyFormatter();
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
