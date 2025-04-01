@@ -32,6 +32,7 @@ function statement(invoice: Invoice, plays: Plays) {
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
   const format = buildCurrencyFormatter();
+  const amounts: Amount[] = [];
 
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
@@ -48,11 +49,15 @@ function statement(invoice: Invoice, plays: Plays) {
     amountGenerated.credits = Math.max(perf.audience - 30, 0);
     // add extra credit for every five comedy attendees
     if ("comedy" === play.type) amountGenerated.credits += Math.floor(perf.audience / 5);
+    amounts.push(amountGenerated);
     // print line for this order
     result += ` ${play.name}: ${format(amountGenerated.amount / 100)} (${perf.audience} seats)\n`;
-    totalAmount += amountGenerated.amount;
-    volumeCredits += amountGenerated.credits;
   }
+  for (let amount of amounts) {
+    totalAmount += amount.amount;
+    volumeCredits += amount.credits;
+  }
+
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
   return result;
