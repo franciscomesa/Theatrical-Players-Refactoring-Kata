@@ -28,12 +28,9 @@ function statement(invoice: Invoice, plays: Plays) {
     throw new Error(`unknown type: ${plays[invalidPerformance.playID].type}`);    
   }
 
-  let totalAmount = 0;
-  let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
   const format = buildCurrencyFormatter();
   const amounts: Amount[] = [];
-
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     const amountGenerated: Amount = {amount: 0, credits: 0};
@@ -53,6 +50,8 @@ function statement(invoice: Invoice, plays: Plays) {
     // print line for this order
     result += ` ${play.name}: ${format(amountGenerated.amount / 100)} (${perf.audience} seats)\n`;
   }
+  let totalAmount = 0;
+  let volumeCredits = 0;
   for (let amount of amounts) {
     totalAmount += amount.amount;
     volumeCredits += amount.credits;
