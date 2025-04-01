@@ -38,14 +38,12 @@ function statement(invoice: Invoice, plays: Plays) {
       case "tragedy":
         amountGenerated.amount = calculateAmountTragedy(perf.audience);
         // add volume credits
-        amountGenerated.credits = Math.max(perf.audience - 30, 0); 
+        amountGenerated.credits = calculateCreditsTragedy(perf); 
         break;
       case "comedy":
         amountGenerated.amount = calculateAmountComedy(perf.audience);
         // add volume credits
-        amountGenerated.credits = Math.max(perf.audience - 30, 0);
-        // add extra credit for every five comedy attendees
-        if ("comedy" === play.type) amountGenerated.credits += Math.floor(perf.audience / 5); 
+        amountGenerated.credits = calculateCreditsComedy(perf.audience); 
         break;
     }
     amounts.push(amountGenerated);
@@ -65,6 +63,17 @@ function statement(invoice: Invoice, plays: Plays) {
 }
 
 export { statement };
+
+  function calculateCreditsComedy(audience: number): number {
+    let credits = Math.max(audience - 30, 0);
+    // add extra credit for every five comedy attendees
+    credits += Math.floor(audience / 5);
+    return credits;
+  }
+
+  function calculateCreditsTragedy(perf: Performance): number {
+    return Math.max(perf.audience - 30, 0);
+  }
 
   function calculateAmountComedy(audience: number) {
     let thisAmount = 30000;
