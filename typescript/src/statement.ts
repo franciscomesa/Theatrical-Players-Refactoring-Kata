@@ -16,6 +16,13 @@ type Invoice = {
 };
 
 function statement(invoice: Invoice, plays: Plays) {
+  const invalidPerformance = invoice.performances.find( (performance) => {
+    return plays[performance.playID].type !== "tragedy" && plays[performance.playID].type !== "comedy";
+  })
+  if (invalidPerformance !== undefined) {
+    throw new Error(`unknown type: ${plays[invalidPerformance.playID].type}`);    
+  }
+
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -38,8 +45,6 @@ function statement(invoice: Invoice, plays: Plays) {
         }
         thisAmount += 300 * perf.audience;
         break;
-      default:
-        throw new Error(`unknown type: ${play.type}`);
     }
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
