@@ -20,6 +20,12 @@ type Amount = {
   credits: number;
 }
 
+interface ReportLine {
+  performanceName: string;
+  amountGenerated: Amount;
+  audiencie: number;
+}
+
 function statement(invoice: Invoice, plays: Plays) {
   const invalidPerformance = invoice.performances.find( (performance) => {
     return plays[performance.playID].type !== "tragedy" && plays[performance.playID].type !== "comedy";
