@@ -37,7 +37,7 @@ function statement(invoice: Invoice, plays: Plays) {
     switch (play.type) {
       case "tragedy":
         amountGenerated.amount = calculateAmountTragedy(perf.audience);
-        amountGenerated.credits = calculateCreditsTragedy(perf); 
+        amountGenerated.credits = calculateCreditsTragedy(perf.audience); 
         break;
       case "comedy":
         amountGenerated.amount = calculateAmountComedy(perf.audience);
@@ -74,8 +74,8 @@ export { statement };
     return credits;
   }
 
-  function calculateCreditsTragedy(perf: Performance): number {
-    return Math.max(perf.audience - 30, 0);
+  function calculateCreditsTragedy(audience: number): number {
+    return Math.max(audience - 30, 0);
   }
 
   function calculateAmountComedy(audience: number) {
