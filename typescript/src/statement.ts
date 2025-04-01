@@ -37,12 +37,10 @@ function statement(invoice: Invoice, plays: Plays) {
     switch (play.type) {
       case "tragedy":
         amountGenerated.amount = calculateAmountTragedy(perf.audience);
-        // add volume credits
         amountGenerated.credits = calculateCreditsTragedy(perf); 
         break;
       case "comedy":
         amountGenerated.amount = calculateAmountComedy(perf.audience);
-        // add volume credits
         amountGenerated.credits = calculateCreditsComedy(perf.audience); 
         break;
     }
@@ -64,9 +62,14 @@ function statement(invoice: Invoice, plays: Plays) {
 
 export { statement };
 
+  /**
+   * Add volume credits.
+   * Also add extra credit for every five comedy attendees
+   * @param audience 
+   * @returns 
+   */
   function calculateCreditsComedy(audience: number): number {
     let credits = Math.max(audience - 30, 0);
-    // add extra credit for every five comedy attendees
     credits += Math.floor(audience / 5);
     return credits;
   }
