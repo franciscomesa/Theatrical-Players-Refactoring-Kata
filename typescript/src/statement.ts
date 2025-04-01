@@ -56,23 +56,28 @@ function statement(invoice: Invoice, plays: Plays) {
     }
     reportLines.push(reportLine);
   }
-  let totalAmount = 0;
-  let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
-  for (let reportLine of reportLines) {
-    totalAmount += reportLine.amountGenerated.amount;
-    volumeCredits += reportLine.amountGenerated.credits;
-    // print line for this order
-    result += ` ${reportLine.performanceName}: ${format(reportLine.amountGenerated.amount / 100)} (${reportLine.audience} seats)\n`;
-
-  }
-
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
+  let result = buildResult(invoice, reportLines, format);
   return result;
 }
 
 export { statement };
+
+  function buildResult(invoice: Invoice, reportLines: ReportLine[], format: { (value: number): string; (value: number | bigint): string; }) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+    for (let reportLine of reportLines) {
+      totalAmount += reportLine.amountGenerated.amount;
+      volumeCredits += reportLine.amountGenerated.credits;
+      // print line for this order
+      result += ` ${reportLine.performanceName}: ${format(reportLine.amountGenerated.amount / 100)} (${reportLine.audience} seats)\n`;
+
+    }
+
+    result += `Amount owed is ${format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+  }
 
   /**
    * Add volume credits.
