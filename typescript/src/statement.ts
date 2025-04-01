@@ -33,17 +33,10 @@ function statement(invoice: Invoice, plays: Plays) {
     let thisAmount = 0;
     switch (play.type) {
       case "tragedy":
-        thisAmount = 40000;
-        if (perf.audience > 30) {
-          thisAmount += 1000 * (perf.audience - 30);
-        }
+        thisAmount = calculateAmountTragedy(thisAmount, perf);
         break;
       case "comedy":
-        thisAmount = 30000;
-        if (perf.audience > 20) {
-          thisAmount += 10000 + 500 * (perf.audience - 20);
-        }
-        thisAmount += 300 * perf.audience;
+        thisAmount = calculateAmountComedy(thisAmount, perf);
         break;
     }
     // add volume credits
@@ -62,6 +55,23 @@ function statement(invoice: Invoice, plays: Plays) {
 }
 
 export { statement };
+
+  function calculateAmountComedy(thisAmount: number, perf: Performance) {
+    thisAmount = 30000;
+    if (perf.audience > 20) {
+      thisAmount += 10000 + 500 * (perf.audience - 20);
+    }
+    thisAmount += 300 * perf.audience;
+    return thisAmount;
+  }
+
+  function calculateAmountTragedy(thisAmount: number, perf: Performance) {
+    thisAmount = 40000;
+    if (perf.audience > 30) {
+      thisAmount += 1000 * (perf.audience - 30);
+    }
+    return thisAmount;
+  }
 
   function buildCurrencyFormatter() {
     return new Intl.NumberFormat("en-US", {
