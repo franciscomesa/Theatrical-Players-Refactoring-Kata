@@ -37,15 +37,17 @@ function statement(invoice: Invoice, plays: Plays) {
     switch (play.type) {
       case "tragedy":
         amountGenerated.amount = calculateAmountTragedy(perf.audience);
+        // add volume credits
+        amountGenerated.credits = Math.max(perf.audience - 30, 0); 
         break;
       case "comedy":
         amountGenerated.amount = calculateAmountComedy(perf.audience);
+        // add volume credits
+        amountGenerated.credits = Math.max(perf.audience - 30, 0);
+        // add extra credit for every five comedy attendees
+        if ("comedy" === play.type) amountGenerated.credits += Math.floor(perf.audience / 5); 
         break;
     }
-    // add volume credits
-    amountGenerated.credits = Math.max(perf.audience - 30, 0);
-    // add extra credit for every five comedy attendees
-    if ("comedy" === play.type) amountGenerated.credits += Math.floor(perf.audience / 5);
     amounts.push(amountGenerated);
     // print line for this order
     result += ` ${play.name}: ${format(amountGenerated.amount / 100)} (${perf.audience} seats)\n`;
