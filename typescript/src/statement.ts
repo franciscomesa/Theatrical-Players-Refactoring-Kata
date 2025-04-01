@@ -33,10 +33,10 @@ function statement(invoice: Invoice, plays: Plays) {
     let thisAmount = 0;
     switch (play.type) {
       case "tragedy":
-        thisAmount = calculateAmountTragedy(thisAmount, perf);
+        thisAmount = calculateAmountTragedy(perf);
         break;
       case "comedy":
-        thisAmount = calculateAmountComedy(thisAmount, perf);
+        thisAmount = calculateAmountComedy(perf);
         break;
     }
     // add volume credits
@@ -56,8 +56,8 @@ function statement(invoice: Invoice, plays: Plays) {
 
 export { statement };
 
-  function calculateAmountComedy(thisAmount: number, perf: Performance) {
-    thisAmount = 30000;
+  function calculateAmountComedy(perf: Performance) {
+    let thisAmount = 30000;
     if (perf.audience > 20) {
       thisAmount += 10000 + 500 * (perf.audience - 20);
     }
@@ -65,8 +65,8 @@ export { statement };
     return thisAmount;
   }
 
-  function calculateAmountTragedy(thisAmount: number, perf: Performance) {
-    thisAmount = 40000;
+  function calculateAmountTragedy(perf: Performance) {
+    let thisAmount = 40000;
     if (perf.audience > 30) {
       thisAmount += 1000 * (perf.audience - 30);
     }
